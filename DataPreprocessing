@@ -21,6 +21,100 @@ dataset1.info()
 
 dataset1=dataset1.select_dtypes(exclude=['object'])
 
+#Revenue
+f, ax = plt.subplots(3, figsize=(12,7))
+
+sns.set(rc={'figure.figsize':(12,8)})
+sns.boxplot(x=dataset1.revenue, ax = ax[0])
+ax[0].set_title("revenue Boxplot")
+sns.distplot(a=dataset1.revenue, kde = False, ax = ax[1])
+ax[1].set_title("revenue Histogram")
+sns.distplot(a=np.log1p(dataset1.revenue), kde = False, ax = ax[2])
+ax[2].set_title("Log1p transformed revenue Histogram")
+f.tight_layout()
+
+dataset1["log_revenue"] = np.log1p(dataset1.revenue)
+
+#length of every movie
+
+dataset1["title"] = dataset1["title"].fillna("")
+dataset["title"] = dataset["title"].fillna("")
+
+dataset1["title_len"] = dataset1["title"].apply(len)
+dataset["title_len"] = dataset["title"].apply(len)
+
+f, ax = plt.subplots(3, figsize=(12,7))
+sns.set(rc={'figure.figsize':(12,8)})
+sns.boxplot(x=dataset1.title_len, ax = ax[0])
+ax[0].set_title("titles' length Boxplot")
+sns.distplot(a=dataset1.title_len, kde = False, ax = ax[1])
+ax[1].set_title("titles' length Histogram")
+sns.distplot(a=np.log1p(dataset1.title_len), kde = False, ax = ax[2])
+ax[2].set_title("Log1p transformed titles' length Histogram")
+f.tight_layout()
+
+dataset1["log_title_len"] = np.log1p(dataset1.title_len)
+dataset["log_title_len"] = np.log1p(dataset.title_len)
+
+#Inspecting movies' overview length
+
+dataset1["overview"] = dataset1["overview"].fillna("")
+dataset["overview"] = dataset["overview"].fillna("")
+
+dataset1["overview_len"] = dataset1["overview"].apply(len)
+dataset["overview_len"] = dataset["overview"].apply(len)
+
+f, ax = plt.subplots(3, figsize=(12,7))
+sns.set(rc={'figure.figsize':(12,8)})
+sns.boxplot(x=dataset1.overview_len, ax = ax[0])
+ax[0].set_title("overview' length Boxplot")
+sns.distplot(a=dataset1.overview_len, kde = False, ax = ax[1])
+ax[1].set_title("overview' length Histogram")
+sns.distplot(a=np.log1p(dataset1.overview_len), kde = False, ax = ax[2])
+ax[2].set_title("Log1p transformed overview' length Histogram")
+f.tight_layout()
+
+dataset1["log_overview_len"] = np.log1p(dataset1.overview_len)
+dataset["log_overview_len"] = np.log1p(dataset.overview_len)
+
+
+# tagline
+
+dataset1["tagline"] = dataset1["tagline"].fillna("")
+dataset["tagline"] = dataset["tagline"].fillna("")
+
+dataset1["tagline_len"] = dataset1["tagline"].apply(len)
+dataset["tagline_len"] = dataset["tagline"].apply(len)
+
+f, ax = plt.subplots(3, figsize=(12,7))
+sns.set(rc={'figure.figsize':(12,8)})
+sns.boxplot(x=dataset1.tagline_len, ax = ax[0])
+ax[0].set_title("tagline_len' length Boxplot")
+sns.distplot(a=dataset1.tagline_len, kde = False, ax = ax[1])
+ax[1].set_title("tagline_len' length Histogram")
+sns.distplot(a=np.log1p(dataset1.tagline_len), kde = False, ax = ax[2])
+ax[2].set_title("Log1p transformed tagline_len' length Histogram")
+f.tight_layout()
+
+dataset1["log_tagline_len"] = np.log1p(dataset1.tagline_len)
+dataset["log_tagline_len"] = np.log1p(dataset.tagline_len)
+
+#Budget
+
+f, ax = plt.subplots(3, figsize=(12,7))
+
+sns.set(rc={'figure.figsize':(12,8)})
+sns.boxplot(x=dataset1.budget, ax = ax[0])
+ax[0].set_title("budget Boxplot")
+sns.distplot(a=dataset1.budget, kde = False, ax = ax[1])
+ax[1].set_title("budget Histogram")
+sns.distplot(a=np.log1p(dataset1.budget), kde = False, ax = ax[2])
+ax[2].set_title("Log1p transformed budget Histogram")
+f.tight_layout()
+
+dataset1["log_budget"] = np.log1p(dataset1.budget)
+dataset["log_budget"] = np.log1p(dataset.budget)
+
 #Genres
 
 def genres_preprocessing(elem):
@@ -47,6 +141,16 @@ genres_df.columns = ["number_of_movies"]
 genres_df = genres_df.sort_values(by="number_of_movies", ascending=False)
 genres_df.plot.bar()
 plt.title("Number of films per genre")
+
+#number of genres
+
+sns.set(rc={'figure.figsize':(9,8)})
+dataset1['num_genres'] = dataset1['genres_processed'].apply(lambda x: len(x) if x != {} else 0)
+dataset['num_genres'] = dataset['genres_processed'].apply(lambda x: len(x) if x != {} else 0)
+
+dataset1['num_genres'].value_counts().plot.bar()
+plt.title("Number of films with more than 1 genre")
+
 
 genres_df.index.values
 for g in genres_df.index.values:
@@ -79,8 +183,6 @@ dataset["production_companies"] = dataset.production_companies.fillna('NoProduct
 dataset1["production_companies_processed"] = dataset1.production_companies.apply(lambda elem: production_companies_preprocessing(elem))
 dataset["production_companies_processed"] = dataset.production_companies.apply(lambda elem: production_companies_preprocessing(elem))
 
-
-
 production_companies_dict = dict()
 
 for production_company in dataset1["production_companies_processed"]:
@@ -104,15 +206,13 @@ dataset["num_of_production_companies"] = dataset.production_companies_processed.
 dataset1["num_of_production_companies"].value_counts().plot.bar()
 plt.title("Number of multiple production companies per movie")
 
-
 for i in production_companies_df.index.values:
     dataset1['isProductionCompany_' + i] = dataset1['production_companies_processed'].apply(lambda x: 1 if i in x else 0)
     dataset['isProductionCompany_' + i] = dataset['production_companies_processed'].apply(lambda x: 1 if i in x else 0)
 
 
-#production Countries
-    
-    
+# Production Countries
+
 def production_countries_preprocessing(elem):
     string = str(elem)
     str1 = string.replace(']','').replace('[','').replace('{','').replace('}','').replace(' ','').replace("name", "").replace("iso_3166_1", "").replace(":", "").replace("\'", "")
@@ -121,7 +221,6 @@ def production_countries_preprocessing(elem):
 
 dataset1["production_countries_processed"] = dataset1.production_countries.fillna("NaN").apply(lambda elem: production_countries_preprocessing(elem))
 dataset["production_countries_processed"] = dataset.production_countries.fillna("NaN").apply(lambda elem: production_countries_preprocessing(elem))
-
 
 production_countries_dict = dict()
 
@@ -141,7 +240,7 @@ for i in production_countries_df.index.values:
     dataset['isProductionCountry_' + i] = dataset['production_countries_processed'].apply(lambda x: 1 if i in x else 0)
 
 
-#popularity
+# Popularity
     
 f, ax = plt.subplots(3, figsize=(11,7))
 sns.boxplot(x=dataset1.popularity, ax = ax[0])
@@ -155,8 +254,7 @@ f.tight_layout()
 dataset1["log_popularity"] = np.log1p(dataset1.popularity)
 dataset["log_popularity"] = np.log1p(dataset.popularity)
 
-
-#runtime
+# Runtime
 
 dataset1["runtime"] = dataset1["runtime"].fillna(dataset1["runtime"].mode()[0])
 dataset["runtime"] = dataset["runtime"].fillna(dataset["runtime"].mode()[0])
@@ -180,7 +278,7 @@ dataset["runtime_in_hours"] = dataset.runtime/360
 dataset1["log_runtime"] = np.log1p(dataset1.runtime)
 dataset["log_runtime"] = np.log1p(dataset.runtime)
 
-#date preprocessing
+# Date Pre-processing
 
 from datetime import datetime
 
@@ -229,7 +327,7 @@ dataset["season"] = dataset["season"].fillna(dataset["season"].mode()[0])
 
 dataset1[["release_date", "month", "year", "day_of_week", "week_of_year", "season"]].head()
 
-#identify the top actor
+# Identify the top actor
 import re
 
 actors_dict = {}
@@ -250,12 +348,10 @@ for element in dataset1[["revenue", "cast"]].values:
 for actor in actors_dict:
     actors_dict[actor] = actors_dict[actor]/size_of_actors
     
-
-
 actors_df = pd.DataFrame.from_dict(actors_dict, orient='index', columns=["mean_movies_revenue"])
 actors_df.sort_values(by="mean_movies_revenue", ascending=False).head(20).plot.bar()
 
-#feature scaling of top actor
+# Feature scaling of top actor
 
 def find_top_actor_from_cast(top_actor, element):
     
@@ -274,9 +370,7 @@ for top_actor in actors_df.sort_values(by="mean_movies_revenue", ascending=False
     dataset1["has_top_actor_"+ top_actor] = dataset1.cast.apply(lambda element: find_top_actor_from_cast(top_actor, element))
     dataset["has_top_actor_"+ top_actor] = dataset.cast.apply(lambda element: find_top_actor_from_cast(top_actor, element))
 
-
-#identify the keywords based on movie revenue
-    
+# Identify the keywords based on movie revenue
 import re
 
 keywords_dict = {}
@@ -301,7 +395,7 @@ keywords_df = pd.DataFrame.from_dict(keywords_dict, orient='index', columns=["me
 keywords_df.sort_values(by="mean_movies_revenue", ascending=False).head(10).plot.bar()
 
 
-# feature scaling identify the keywords based on movie revenue
+# Feature scaling identify the keywords based on movie revenue
 
 def find_top_keywords_from_cast(top_keyword, element):
     
@@ -320,10 +414,7 @@ for top_keyword in keywords_df.sort_values(by="mean_movies_revenue", ascending=F
     dataset1["has_top_keyword_"+ top_keyword] = dataset1.Keywords.apply(lambda element: find_top_keywords_from_cast(top_keyword, element))
     dataset["has_top_keyword_"+ top_keyword] = dataset.Keywords.apply(lambda element: find_top_keywords_from_cast(top_keyword, element))
 
-# CAST
-    
-
-
+# Cast
 dataset1["num_of_cast"] = dataset1["cast"].str.count("name")
 dataset["num_of_cast"] = dataset["cast"].str.count("name")
 
@@ -340,12 +431,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_cast), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_cast Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_cast"] = np.log1p(dataset1.num_of_cast)
 dataset["log_num_of_cast"] = np.log1p(dataset.num_of_cast)
 
-
-#Male Cast
+# Male Cast
 
 dataset1["num_of_male_cast"] = dataset1["cast"].str.count("'gender': 2")
 dataset["num_of_male_cast"] = dataset["cast"].str.count("'gender': 2")
@@ -407,11 +496,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_crew), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_crew Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_crew"] = np.log1p(dataset1.num_of_crew)
 dataset["log_num_of_crew"] = np.log1p(dataset.num_of_crew)
 
-# counting the number of Male Crew
+# Counting the number of Male Crew
 
 dataset1["num_of_male_crew"] = dataset1["crew"].str.count("'gender': 2")
 dataset["num_of_male_crew"] = dataset["crew"].str.count("'gender': 2")
@@ -429,12 +517,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_male_crew), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_male_crew Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_male_crew"] = np.log1p(dataset1.num_of_male_crew)
 dataset["log_num_of_male_crew"] = np.log1p(dataset.num_of_male_crew)
 
-
-# counting the number of female crew
+# Counting the number of female crew
 
 dataset1["num_of_female_crew"] = dataset1["crew"].str.count("'gender': 1")
 dataset["num_of_female_crew"] = dataset["crew"].str.count("'gender': 1")
@@ -452,11 +538,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_female_crew), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_female_crew Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_female_crew"] = np.log1p(dataset1.num_of_female_crew)
 dataset["log_num_of_female_crew"] = np.log1p(dataset.num_of_female_crew)
 
-# identify the top director of the movie
+# Identify the top director of the movie
 import re
 
 directors_dict = {}
@@ -481,7 +566,7 @@ directors_df = pd.DataFrame.from_dict(directors_dict, orient='index', columns=["
 directors_df.sort_values(by="mean_movies_revenue", ascending=False).head(10).plot.bar()
 
 
-#feature scaling and find the top director
+# Feature Scaling and find the top director
 
 def find_top_directors_from_crew(top_director, element):
     
@@ -500,7 +585,7 @@ for top_director in directors_df.sort_values(by="mean_movies_revenue", ascending
     dataset1["has_top_director_"+ top_director] = dataset1.crew.apply(lambda element: find_top_directors_from_crew(top_director, element))
     dataset["has_top_director_"+ top_director] = dataset.crew.apply(lambda element: find_top_directors_from_crew(top_director, element))
 
-# identify the top producer of average movie
+# Identify the top producer of average movie
     
 import re
 
@@ -525,7 +610,7 @@ for key in producers_dict:
 producers_df = pd.DataFrame.from_dict(producers_dict, orient='index', columns=["mean_movies_revenue"])
 producers_df.sort_values(by="mean_movies_revenue", ascending=False).head(10).plot.bar()
 
-#feature scaling of producer
+# Feature Scaling of Producer
 
 def find_top_producers_from_crew(top_producer, element):
     
@@ -544,7 +629,7 @@ for top_producer in producers_df.sort_values(by="mean_movies_revenue", ascending
     dataset1["has_top_producer_"+ top_producer] = dataset1.crew.apply(lambda element: find_top_producers_from_crew(top_producer, element))
     dataset["has_top_producer_"+ top_producer] = dataset.crew.apply(lambda element: find_top_producers_from_crew(top_producer, element))
 
-# number of director
+# Number of Director
     
 dataset1["num_of_directors"] = dataset1["crew"].str.count("Directing")
 dataset["num_of_directors"] = dataset["crew"].str.count("Directing")
@@ -562,11 +647,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_directors), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_directors Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_directors"] = np.log1p(dataset1.num_of_directors)
 dataset["log_num_of_directors"] = np.log1p(dataset.num_of_directors)
 
-# number of producer
+# Number of Producer
 
 dataset1["num_of_producers"] = dataset1["crew"].str.count("Production")
 dataset["num_of_producers"] = dataset["crew"].str.count("Production")
@@ -588,8 +672,7 @@ f.tight_layout()
 dataset1["log_num_of_producers"] = np.log1p(dataset1.num_of_producers)
 dataset["log_num_of_producers"] = np.log1p(dataset.num_of_producers)
 
-
-#number of writer
+# Number of Writer
 
 dataset1["num_of_writers"] = dataset1["crew"].str.count("Writing")
 dataset["num_of_writers"] = dataset["crew"].str.count("Writing")
@@ -611,7 +694,7 @@ f.tight_layout()
 dataset1["log_num_of_writers"] = np.log1p(dataset1.num_of_writers)
 dataset["log_num_of_writers"] = np.log1p(dataset.num_of_writers)
 
-# number of editors
+# Number of Editors
 
 dataset1["num_of_editors"] = dataset1["crew"].str.count("Editing")
 dataset["num_of_editors"] = dataset["crew"].str.count("Editing")
@@ -633,7 +716,7 @@ f.tight_layout()
 dataset1["log_num_of_editors"] = np.log1p(dataset1.num_of_editors)
 dataset["log_num_of_editors"] = np.log1p(dataset.num_of_editors)
 
-# number of art crew
+# Number of Art Crew
 
 dataset1["num_of_art_crew"] = dataset1["crew"].str.count("Art")
 dataset["num_of_art_crew"] = dataset["crew"].str.count("Art")
@@ -655,7 +738,7 @@ f.tight_layout()
 dataset1["log_num_of_art_crew"] = np.log1p(dataset1.num_of_art_crew)
 dataset["log_num_of_art_crew"] = np.log1p(dataset.num_of_art_crew)
 
-#number of sound crew
+# Number of Sound Crew
 
 dataset1["num_of_sound_crew"] = dataset1["crew"].str.count("Sound")
 dataset["num_of_sound_crew"] = dataset["crew"].str.count("Sound")
@@ -677,7 +760,7 @@ f.tight_layout()
 dataset1["log_num_of_sound_crew"] = np.log1p(dataset1.num_of_sound_crew)
 dataset["log_num_of_sound_crew"] = np.log1p(dataset.num_of_sound_crew)
 
-#number of crew and makeup team
+# Number of Crew and Makeup Team
 
 dataset1["num_of_costume_crew"] = dataset1["crew"].str.count("Costume & Make-Up")
 dataset["num_of_costume_crew"] = dataset["crew"].str.count("Costume & Make-Up")
@@ -700,7 +783,7 @@ dataset1["log_num_of_costume_crew"] = np.log1p(dataset1.num_of_costume_crew)
 dataset["log_num_of_costume_crew"] = np.log1p(dataset.num_of_costume_crew)
 
 
-#number of camera crew
+# Number of Camera Crew
 
 dataset1["num_of_camera_crew"] = dataset1["crew"].str.count("\'department\': \'Camera\'")
 dataset["num_of_camera_crew"] = dataset["crew"].str.count("\'department\': \'Camera\'")
@@ -723,7 +806,7 @@ dataset1["log_num_of_camera_crew"] = np.log1p(dataset1.num_of_camera_crew)
 dataset["log_num_of_camera_crew"] = np.log1p(dataset.num_of_camera_crew)
 
 
-# number of visual effect crew
+# Number of Visual Effect Crew
 
 dataset1["num_of_visual_effects_crew"] = dataset1["crew"].str.count("\'department\': \'Visual Effects\'")
 dataset["num_of_visual_effects_crew"] = dataset["crew"].str.count("\'department\': \'Visual Effects\'")
@@ -741,12 +824,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_visual_effects_crew), kde = False, ax = 
 ax[2].set_title("Log1p transformed num_of_visual_effects_crew Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_visual_effects_crew"] = np.log1p(dataset1.num_of_visual_effects_crew)
 dataset["log_num_of_visual_effects_crew"] = np.log1p(dataset.num_of_visual_effects_crew)
 
-
-#number of lighting crew
+# Number of Lighting Crew
 
 dataset1["num_of_lighting_crew"] = dataset1["crew"].str.count("\'department\': \'Lighting\'")
 dataset["num_of_lighting_crew"] = dataset["crew"].str.count("\'department\': \'Lighting\'")
@@ -764,11 +845,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_lighting_crew), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_lighting_crew Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_lighting_crew"] = np.log1p(dataset1.num_of_lighting_crew)
 dataset["log_num_of_lighting_crew"] = np.log1p(dataset.num_of_lighting_crew)
 
-# number of other crew
+# Number of Other Crew
 
 dataset1["num_of_other_crew"] = dataset1["crew"].str.count("\'department\': \'Crew\'")
 dataset["num_of_other_crew"] = dataset["crew"].str.count("\'department\': \'Crew\'")
@@ -790,8 +870,7 @@ f.tight_layout()
 dataset1["log_num_of_other_crew"] = np.log1p(dataset1.num_of_other_crew)
 dataset["log_num_of_other_crew"] = np.log1p(dataset.num_of_other_crew)
 
-
-#production countries
+# Production Countries
 
 dataset1["num_of_production_countries"] = dataset1.production_countries_processed.apply(len)
 dataset["num_of_production_countries"] = dataset.production_countries_processed.apply(len)
@@ -809,11 +888,10 @@ sns.distplot(a=np.log1p(dataset1.num_of_production_countries), kde = False, ax =
 ax[2].set_title("Log1p transformed num_of_production_countries Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_production_countries"] = np.log1p(dataset1.num_of_production_countries)
 dataset["log_num_of_production_countries"] = np.log1p(dataset.num_of_production_countries)
 
-#number of genres in a movie
+# Number of Genres in a Movie
 
 dataset1["num_of_genres"] = dataset1.genres_processed.apply(len)
 dataset["num_of_genres"] = dataset.genres_processed.apply(len)
@@ -831,10 +909,210 @@ sns.distplot(a=np.log1p(dataset1.num_of_genres), kde = False, ax = ax[2])
 ax[2].set_title("Log1p transformed num_of_genres Histogram")
 f.tight_layout()
 
-
 dataset1["log_num_of_genres"] = np.log1p(dataset1.num_of_genres)
 dataset["log_num_of_genres"] = np.log1p(dataset.num_of_genres)
 
+#    EDA Bivariate Analysis
 
-# Project is still not completed .
-# Only the data preprocessing is done ..
+sns.set(rc={'figure.figsize':(20,27)})
+
+# Compute the correlation matrix
+corr = dataset1[["revenue", "budget", "popularity", "runtime", "num_of_cast", "num_of_male_cast",
+                 "num_of_female_cast",
+                 "num_genres", "num_of_production_countries", "day_of_week", "month", "year", "week_of_year", "season",
+                 "title_len", "overview_len", "tagline_len",
+                 "num_of_directors", "num_of_producers", "num_of_editors", "num_of_art_crew", "num_of_sound_crew",
+                 "num_of_costume_crew", "num_of_camera_crew", "num_of_visual_effects_crew", "num_of_lighting_crew",
+                 "num_of_other_crew"]].corr()
+
+# Generate a mask for the upper triangle
+
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+
+sns.heatmap(corr, mask=mask, 
+            annot=True, 
+            fmt=".2f", 
+            cmap='coolwarm')
+
+plt.title("Correlation between numerical features")
+
+#   Bivariate Analysis for log-transformed numerical features
+
+sns.set(rc={'figure.figsize':(18,20)})
+
+# Compute the correlation matrix
+
+corr = dataset1[["log_revenue", "log_budget", "log_popularity", "log_runtime",
+                 "log_num_of_cast", "log_num_of_male_cast",
+                 "log_num_of_female_cast", "num_genres", "num_of_production_countries",
+                "day_of_week", "month", "year", "week_of_year", "season",
+                "log_title_len", "log_overview_len", "log_tagline_len",
+                "log_num_of_directors", "log_num_of_producers", "log_num_of_editors", "log_num_of_art_crew", "log_num_of_sound_crew",
+                       "log_num_of_costume_crew", "log_num_of_camera_crew", "log_num_of_visual_effects_crew", "log_num_of_lighting_crew",
+                        "log_num_of_other_crew"]].corr()
+
+# Generate a mask for the upper triangle
+
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+
+sns.heatmap(corr, mask=mask, 
+            annot=True, 
+            fmt=".2f", 
+            cmap='coolwarm')
+
+plt.title("Correlation between log1p transformed numerical features")
+
+#     Bivariate analysis and feature scaling
+
+# has_collection and revenue
+
+dataset1['has_collection'] = [0 if pd.isnull(x) else 1 for x in dataset1['belongs_to_collection']]
+dataset['has_collection'] = [0 if pd.isnull(x) else 1 for x in dataset['belongs_to_collection']]
+print(dataset1['has_collection'].value_counts())
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='has_collection', y='revenue', data=dataset1)
+plt.title('Revenue for film with and without being in a collection')  
+
+# homepage and revenue
+
+dataset1['has_homepage'] = [0 if pd.isnull(x) else 1 for x in dataset1['homepage']]
+dataset['has_homepage'] = [0 if pd.isnull(x) else 1 for x in dataset['homepage']]
+print(dataset['has_homepage'].value_counts())
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='has_homepage', y='revenue', data=dataset1)
+plt.title('Revenue for film with and without homepage')
+
+# tagline and revenue
+
+dataset1['has_tag'] = [0 if len(x) == 0 else 1 for x in dataset1['tagline']]
+dataset['has_tag'] = [0 if len(x) == 0 else 1 for x in dataset['tagline']]
+print(dataset1['has_tag'].value_counts())
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='has_tag', y='revenue', data=dataset1)
+plt.title('Revenue for film with and without tagline')
+
+
+# number of genres per movie and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='num_of_genres', y='revenue', data=dataset1)
+plt.title('Revenues for films with multiple genres')
+
+
+ #   Bivariate Analysis between each genre and revenue
+for i, g in enumerate(genres_df.index.values):
+    genres_df.loc[g, "median_salary"] = dataset1[dataset1['isGenre_' + g]==1].revenue.median()
+
+genres_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(10)
+
+genres_df.sort_values(by=["median_salary"], ascending=False).median_salary.plot.bar()
+plt.title("Sorted movie genres by median revenue")
+
+
+for i, p in enumerate(genres_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(10).index.values):
+    dataset1['isTopGenre_' + p] = dataset1['genres_processed'].apply(lambda x: 1 if p in x else 0)
+    dataset1['isTopGenre_Other'] = dataset1['genres_processed'].apply(lambda x: 1 if p not in x else 0)
+    dataset['isTopGenre_' + p] = dataset['genres_processed'].apply(lambda x: 1 if p in x else 0)
+    dataset['isTopGenre_Other'] = dataset['genres_processed'].apply(lambda x: 1 if p not in x else 0)
+
+f, ax = plt.subplots(len(genres_df.index.values), 1, figsize=(15,160))
+
+for i, g in enumerate(genres_df.index.values):
+    sns.boxplot(x=dataset1['isGenre_' + g], y='revenue', ax=ax[i], data=dataset1)
+    ax[i].set_title('isGenre_' + g +" and revenue boxplot")
+f.tight_layout()
+
+# original language and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='original_language', y='revenue', data=dataset1)
+plt.title('Revenue for a movie and its and original_language')
+
+# english and non english movie vs revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='is_english_language', y='revenue', data=dataset1)
+plt.title('Revenue for a movie in contrast with english and non-english language')
+
+#production country and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='num_of_production_countries', y='revenue', data=dataset1)
+plt.title('number of production countries for a movie and revenue')
+
+f, ax = plt.subplots(len(production_countries_df.index.values), 1, figsize=(15,350))
+
+for i, c in enumerate(production_countries_df.index.values):
+    sns.boxplot(x=dataset1['isProductionCountry_' + c], y='revenue', ax=ax[i], data=dataset1)
+    ax[i].set_title('isProductionCountry_' + c +" and revenue boxplot")
+f.tight_layout()
+
+for i, c in enumerate(production_countries_df.index.values):
+    production_countries_df.loc[c, "median_salary"] = dataset1[dataset1['isProductionCountry_' + c]==1].revenue.median()
+
+production_countries_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(10)    
+
+for i, p in enumerate(production_countries_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(10).index.values):
+    dataset1['isTopProductionCountry_' + p] = dataset1['production_countries_processed'].apply(lambda x: 1 if p in x else 0)
+    dataset['isTopProductionCountry_' + p] = dataset['production_countries_processed'].apply(lambda x: 1 if p in x else 0)
+
+# Day of the week when the movie released and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='day_of_week', y='revenue', data=dataset1)
+plt.title('day_of_week when the movie release and revenue')
+
+# Week of year when the movie released and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='week_of_year', y='revenue', data=dataset1)
+plt.title('day_of_week when the movie release and revenue')
+
+# Month when the movie released and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='month', y='revenue', data=dataset1)
+plt.title('month when the movie release and revenue')
+
+# Season when the movie released and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='season', y='revenue', data=dataset1)
+plt.title('season when the movie release and revenue')
+
+# Year when the movie released and revenue
+
+sns.set(rc={'figure.figsize':(20, 8)})
+g = sns.boxplot(x='year', y='revenue', data=dataset1)
+plt.xticks(rotation=90)
+plt.title('Year when the movie release and revenue')
+
+ 
+# Number of Production Companies and revenue
+
+sns.set(rc={'figure.figsize':(12, 8)})
+sns.boxplot(x='num_of_production_companies', y='revenue', data=dataset1)
+plt.title('number of production companies for a movie and revenue')
+
+f, ax = plt.subplots(len(production_companies_df.head(5).index.values), 1, figsize=(15,20))
+
+for i, p in enumerate(production_companies_df.head(5).index.values):
+    sns.boxplot(x=dataset1['isProductionCompany_' + p], y='revenue', ax=ax[i], data=dataset1)
+    ax[i].set_title('isProductionCompany_' + p +" and revenue boxplot")
+f.tight_layout()
+
+for i, p in enumerate(production_companies_df.index.values):
+    production_companies_df.loc[p, "median_salary"] = dataset1[dataset1['isProductionCompany_' + p]==1].revenue.median()
+
+production_companies_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(5)
+
+for i, p in enumerate(production_companies_df.sort_values(by=["number_of_movies", "median_salary"], ascending=False).head(10).index.values):
+    dataset1['isTopProductionCompany_' + p] = dataset1['production_companies_processed'].apply(lambda x: 1 if p in x else 0)
+    #train_df['isTopProductionCompany_Other'] = train_df['production_companies_processed'].apply(lambda x: 1 if p not in x else 0)
+    dataset['isTopProductionCompany_' + p] = dataset['production_companies_processed'].apply(lambda x: 1 if p in x else 0)
+    #test_df['isTopProductionCompany_Other'] = test_df['production_companies_processed'].apply(lambda x: 1 if p not in x else 0)
