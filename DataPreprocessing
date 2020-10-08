@@ -7,20 +7,6 @@ import seaborn as sns
 dataset=pd.read_csv('test.csv')
 dataset1=pd.read_csv('train.csv')
 
-dataset1.isna().sum()
-dataset.isna().sum()
-
-a=dataset1.head()
-b=dataset1.describe()
-
-dataset1.boxplot()
-
-dataset1.hist()
-
-dataset1.info()
-
-dataset1=dataset1.select_dtypes(exclude=['object'])
-
 #Revenue
 f, ax = plt.subplots(3, figsize=(12,7))
 
