@@ -8,11 +8,9 @@ Project details:
 
 
 
-->Python Version:- python 2.7 
-
-
-Some of the attributes may not found in the updated libraries so I suggest that use python 3.0 for suitable environment
+->**Python Version**:- python 2.7 
+-Some of the attributes may not found in the updated libraries so I suggest that use python 3.0 for suitable environment
 
 
 
-->Anaconda Version:- anaconda 2 
+->**Anaconda Version**:- anaconda 2 
