@@ -23,8 +23,7 @@ f.tight_layout()
 # making the natural log values to increase the model performance
 dataset1["log_revenue"] = np.log1p(dataset1.revenue)
 
-
-# length of every movie
+# Length of every movie
 dataset1["title"] = dataset1["title"].fillna("")
 dataset["title"] = dataset["title"].fillna("")
 
@@ -172,8 +171,6 @@ dataset["production_companies"] = dataset.production_companies.fillna('NoProduct
 dataset1["production_companies_processed"] = dataset1.production_companies.apply(lambda elem: production_companies_preprocessing(elem))
 dataset["production_companies_processed"] = dataset.production_companies.apply(lambda elem: production_companies_preprocessing(elem))
 
-
-
 production_companies_dict = dict()
 
 for production_company in dataset1["production_companies_processed"]:
@@ -306,8 +303,6 @@ dataset["week_of_year"] = dataset.temp.apply(lambda x: x.isocalendar()[1])
 
 dataset = dataset.drop(['temp'], axis=1)
 
-
-
 dataset1["day_of_week"] = dataset1["day_of_week"].fillna(dataset1["day_of_week"].mode()[0])
 dataset["day_of_week"] = dataset["day_of_week"].fillna(dataset["day_of_week"].mode()[0])
 
@@ -327,8 +322,8 @@ dataset1[["release_date", "month", "year", "day_of_week", "week_of_year", "seaso
 
 
 # Identifying top actors in movies based on mean movies' revenue
-i
-mport re
+
+import re
 
 actors_dict = {}
 size_of_actors = len(dataset1) - dataset1.cast.isna().sum()
@@ -558,8 +553,6 @@ f.tight_layout()
 dataset1["log_num_of_female_crew"] = np.log1p(dataset1.num_of_female_crew)
 dataset["log_num_of_female_crew"] = np.log1p(dataset.num_of_female_crew)
 
-
- 
 # Identifying top directors based on average movie revenue
 
 import re
@@ -648,8 +641,6 @@ def find_top_producers_from_crew(top_producer, element):
 for top_producer in producers_df.sort_values(by="mean_movies_revenue", ascending=False).head(10).index.values:
     dataset1["has_top_producer_"+ top_producer] = dataset1.crew.apply(lambda element: find_top_producers_from_crew(top_producer, element))
     dataset["has_top_producer_"+ top_producer] = dataset.crew.apply(lambda element: find_top_producers_from_crew(top_producer, element))
-
-
 
 # Number of directors in a movie
     
