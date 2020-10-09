@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Oct  9 12:23:52 2020
-
-@author: AyushPratap
-"""
-
 columns_for_training = ["log_budget", "log_popularity", "log_runtime", "day_of_week", "year", "month", "week_of_year", "season",
                         "num_genres", "num_of_production_countries", "log_num_of_cast", "log_num_of_male_cast", "log_num_of_female_cast", "has_collection", 
                         "has_homepage", "has_tag", "is_english_language",
@@ -76,8 +69,6 @@ oof_rmse += rmse
 
 predictions_linear_regression_test += lin.predict(dataset1[X_train.columns])/kfold_splits
 
-
-
 predictions_linear_regression_test = np.expm1(predictions_linear_regression_test)
 print()
 print(predictions_linear_regression_test)
@@ -90,6 +81,7 @@ print("OOF Out-of-fold rmse:", oof_rmse/kfold_splits)
 lin.score(X_train,y_train)
 
 lin.score(X_test,y_test)
+
 
 #                        Decision Tree Regressor
 
@@ -116,8 +108,6 @@ num_fold = num_fold + 1
 oof_rmse += rmse
 
 predictions_decision_tree_regressor_test += lin.predict(dataset1[X_train.columns])/kfold_splits
-
-
 
 predictions_decision_tree_regressor_test = np.expm1(predictions_decision_tree_regressor_test)
 print()
@@ -159,8 +149,6 @@ oof_rmse += rmse
 
 
 predictions_random_forest_test += ran.predict(dataset1[X_train.columns])/kfold_splits
-
-
 
 predictions_random_forest_test = np.expm1(predictions_random_forest_test)
 print()
