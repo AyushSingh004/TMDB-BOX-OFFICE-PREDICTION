@@ -29,9 +29,7 @@ columns_for_training = ["log_budget", "log_popularity", "log_runtime", "day_of_w
  # adding has_top_producer_ columns for features before ML modeling
  columns_for_training.extend(dataset1.select(lambda col: col.startswith('has_top_producer_'), axis=1).columns.values) 
 
-
 dataset1[columns_for_training].columns
-
 
 # Making feature matrix and vectors of prediction 
 
@@ -40,13 +38,13 @@ y = dataset1['log_revenue']
 
 
 #                      Linear Regression
-# using k_folds
+# Using k_folds
 
-# splitting the data into training and testing data by using train_test_split
+# Splitting the data into training and testing data by using train_test_split
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test=train_test_split(X,y)   
 
-# making the k_folds value
+# Making the k_folds value
 kfold_splits = 5
 
 predictions_linear_regression_test = np.zeros(len(dataset))
@@ -56,16 +54,16 @@ oof_rmse = 0
 from sklearn.model_selection import KFold
 Kfolds = KFold(n_splits=kfold_splits, shuffle=False)
 
-# using linear regression
+# Using linear regression
 
 from sklearn.linear_model import LinearRegression
 lin=LinearRegression()
 lin.fit(X_train,y_train)
 
-# making predictions variable
+# Making predictions variable
 y_pred=lin.predict(X_test)
 
-# calculating the mean_squared_error
+# Calculating the mean_squared_error
 
 from sklearn.metrics import mean_squared_error
 rmse=np.sqrt(mean_squared_error(y_test,y_pred))
@@ -82,22 +80,22 @@ print(predictions_linear_regression_test)
 print()
 print("OOF Out-of-fold rmse:", oof_rmse/kfold_splits)
 
-# score of predictions  
+# Score of predictions  
 
 lin.score(X_train,y_train)
 lin.score(X_test,y_test)
 
 
 
-#                        Decision Tree Regressor
+#                                                                      Decision Tree Regressor
 
-# using k_folds
+# Using k_folds
 
-# splitting the data into training and testing data by using train_test_split
+# Splitting the data into training and testing data by using train_test_split
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test=train_test_split(X,y)   
 
-# making the k_folds value
+# Making the k_folds value
 kfold_splits = 5
 
 predictions_decision_tree_regressor_test = np.zeros(len(dataset))
@@ -107,16 +105,16 @@ oof_rmse = 0
 from sklearn.model_selection import KFold
 Kfolds = KFold(n_splits=kfold_splits, shuffle=False)
 
-# using decision tree regressor
+# Using decision tree regressor
 
 from sklearn.tree import DecisionTreeRegressor
 dtr=DecisionTreeRegressor()
 dtr.fit(X_train,y_train)
 
-# making predictions variable
+# Making predictions variable
 y_pred=lin.predict(X_test)
 
-# calculating the mean_squared_error
+# Calculating the mean_squared_error
 from sklearn.metrics import mean_squared_error
 rmse=np.sqrt(mean_squared_error(y_test,y_pred))
 
@@ -132,21 +130,21 @@ print(predictions_decision_tree_regressor_test)
 print()
 print("OOF Out-of-fold rmse:", oof_rmse/kfold_splits)
 
-# score prediction
+# Score Prediction
 
 dtr.score(X_train,y_train)
 dtr.score(X_test,y_test)
 
 
 
-#                            Random Forest Regressor
-# using k_folds
+#                                                                     Random Forest Regressor
+# Using k_folds
 
-# splitting the data into training and testing data by using train_test_split
+# Splitting the data into training and testing data by using train_test_split
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test=train_test_split(X,y)   
 
-# making the k_folds value
+# Making the k_folds value
 kfold_splits = 5
 
 predictions_random_forest_test = np.zeros(len(dataset))
@@ -156,12 +154,12 @@ oof_rmse = 0
 from sklearn.model_selection import KFold
 Kfolds = KFold(n_splits=kfold_splits, shuffle=False)
 
-# using Random Forest Regressor
+# Using Random Forest Regressor
 from sklearn.ensemble import RandomForestRegressor
 ran=RandomForestRegressor()
 ran.fit(X_train,y_train)
 
-# calculating the mean_squared_error
+# Calculating the mean_squared_error
 y_pred=ran.predict(X_test)
 
 # Calculating the root squared error
@@ -172,7 +170,6 @@ print("Fold" ,num_fold, "xvalid rmse:", rmse)
 num_fold = num_fold + 1
 oof_rmse += rmse
 
-
 predictions_random_forest_test += ran.predict(dataset1[X_train.columns])/kfold_splits
 
 predictions_random_forest_test = np.expm1(predictions_random_forest_test)
@@ -181,8 +178,7 @@ print(predictions_random_forest_test)
 print()
 print("OOF Out-of-fold rmse:", oof_rmse/num_of_splits)
  
-
-#score prediction
+# Score Prediction
 
 ran.score(X_train,y_train)
 ran.score(X_test,y_test)
