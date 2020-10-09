@@ -1,7 +1,7 @@
 ## TMDB-BOX-OFFICE-PREDICTION
-*[General Information](#general-info)
-*[Technologies](#technologies)
-*[Setup](#setup)
+* [General Information](#general-info)
+* [Technologies](#technologies)
+* [Setup](#setup)
 
 ## General Information
 This project is based on a machine learning algorithms and data analysis . The movie dataset from kaggle is been used that consists of movie details for the building of the project.
